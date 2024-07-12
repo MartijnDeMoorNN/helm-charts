@@ -2,7 +2,7 @@
 
 Testkube is an open-source platform that simplifies the deployment and management of automated testing infrastructure.
 
-![Version: 2.0.10](https://img.shields.io/badge/Version-2.0.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
+![Version: 2.0.13](https://img.shields.io/badge/Version-2.0.13-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square)
 
 ## Install
 
@@ -136,7 +136,7 @@ kubectl label --overwrite crds scripts.tests.testkube.io app.kubernetes.io/manag
 | Repository | Name | Version |
 |------------|------|---------|
 | file://../global | global | 0.1.2 |
-| file://../testkube-api | testkube-api | 2.0.6 |
+| file://../testkube-api | testkube-api | 2.0.8 |
 | file://../testkube-logs | testkube-logs | 0.2.0 |
 | file://../testkube-operator | testkube-operator | 2.0.0 |
 | https://charts.bitnami.com/bitnami | mongodb | 13.10.1 |
@@ -162,7 +162,7 @@ kubectl label --overwrite crds scripts.tests.testkube.io app.kubernetes.io/manag
 | global.testWorkflows.globalTemplate.enabled | bool | `false` | Is global template enabled |
 | global.testWorkflows.globalTemplate.name | string | `"global-template"` | Name of the global template |
 | global.testWorkflows.globalTemplate.spec | object | `{}` | Specification for the global template |
-| global.tls.caCertPath | string | `""` | Path to the CA certificate file |
+| global.tls.caCertPath | string | `""` | Path to the PEM-encoded CA certificate file (needs to be mounted to the container previously) |
 | global.tls.skipVerify | bool | `false` | Toggle whether to globally skip certificate verification |
 | global.tolerations | list | `[{"effect":"NoSchedule","key":"kubernetes.io/arch","operator":"Equal","value":"arm64"}]` | Tolerations to add to all deployed pods |
 | global.volumes | object | `{"additionalVolumeMounts":[],"additionalVolumes":[]}` | Global volume settings (API & Test Jobs) |
@@ -232,6 +232,7 @@ kubectl label --overwrite crds scripts.tests.testkube.io app.kubernetes.io/manag
 | testkube-api.cloud.tls.certificate.certFile | string | `"/tmp/agent-cert/cert.crt"` | Default path for certificate file |
 | testkube-api.cloud.tls.certificate.keyFile | string | `"/tmp/agent-cert/cert.key"` | Default path for certificate key file |
 | testkube-api.cloud.tls.certificate.secretRef | string | `""` | When provided, it will use the provided certificates when authenticating with the Agent (gRPC) API (secret should contain cert.crt, key.crt and ca.crt) |
+| testkube-api.cloud.tls.customCaDirPath | string | `""` | Specifies the path to the directory (skip the trailing slash) where CA certificates should be mounted. The mounted file should container a PEM encoded CA certificate. |
 | testkube-api.cloud.tls.customCaSecretRef | string | `""` |  |
 | testkube-api.cloud.tls.enabled | bool | `true` | Toggle should the connection to Agent API in Cloud/Enterprise use secure GRPC (GRPCS) (if false, it will use insecure GRPC) |
 | testkube-api.cloud.tls.skipVerify | bool | `false` | Toggle should the client skip verifying the Agent API server cert in Cloud/Enterprise |
@@ -256,8 +257,9 @@ kubectl label --overwrite crds scripts.tests.testkube.io app.kubernetes.io/manag
 | testkube-api.image.pullSecrets | list | `[]` | Testkube API k8s secret for private registries |
 | testkube-api.image.registry | string | `"docker.io"` | Testkube API image registry |
 | testkube-api.image.repository | string | `"kubeshop/testkube-api-server"` | Testkube API image name |
-| testkube-api.imageInspectionCache.enabled | bool | `true` |  |
-| testkube-api.imageInspectionCache.name | string | `"testkube-image-cache"` |  |
+| testkube-api.imageInspectionCache.enabled | bool | `true` | Status of the persistent cache |
+| testkube-api.imageInspectionCache.name | string | `"testkube-image-cache"` | ConfigMap name to persist cache |
+| testkube-api.imageSecretsCache.ttl | string | `"30m"` | TTL for image pull secrets cache (set to 0 to disable) |
 | testkube-api.imageTwInit.digest | string | `""` | Test Workflows image digest in the way sha256:aa.... Please note this parameter, if set, will override the tag |
 | testkube-api.imageTwInit.pullSecrets | list | `[]` | Test Workflows image k8s secret for private registries |
 | testkube-api.imageTwInit.registry | string | `"docker.io"` | Test Workflows image registry |

@@ -176,6 +176,11 @@ imageInspectionCache:
   ## ConfigMap name to persist cache
   name: "testkube-image-cache"
 
+## Cache configuration for image pull secrets
+imageSecretsCache:
+  ## TTL for image pull secrets cache (set to 0 to disable)
+  ttl: 30m
+
 ## Multinamespace feature. Disabled by default
 multinamespace:
   enabled: false
